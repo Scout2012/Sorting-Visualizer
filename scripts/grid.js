@@ -132,7 +132,33 @@ class Quicksort{
 
 // Rojan
 class Insertionsort{
-  step(){}
+	inputArr = [0,1,2,49,19,203]
+
+	insertion_Sort(inputArr)
+	{
+  		for (var i = 1; i < inputArr.length; i++) 
+  		{
+    			if (inputArr[i] < inputArr[0]) 
+    			{
+      				arr.unshift(inputArr.splice(i,1)[0]);
+    			} 
+    			else if (inputArr[i] > inputArr[i-1]) 
+    			{
+      				continue;
+    			} 
+    			else {
+      				for (var j = 1; j < i; j++) {
+        				if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j]) 
+        				{
+          					inputArr.splice(j,0,inputArr.splice(i,1)[0]);
+						console.log(inputArr);
+        				}
+      				}
+    			}
+  		}
+  		return inputArr;
+	}
+
 }
 
 //This will call each sorting algo's step function
