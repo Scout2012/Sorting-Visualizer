@@ -56,22 +56,22 @@ class Mergesort{
     var mid = Math.floor(len/2);
     var left = arr.slice(0,mid);
     var right = arr.slice(mid);
-    
+
     if(len < 2){
       return arr;
     }
-    // break the array into left and right components 
+    // break the array into left and right components
     return merge(mergesort(left),mergesort(right));
    }
 
     merge(left,right){
-  
+
       var  result = [];
       var  lLen = left.length;
       var  rLen = right.length;
       var  l = 0;
       var  r = 0;
-  
+
   while(l < lLen && r < rLen){
      if(left[l] < right[r]){
        result.push(left[l++]);
@@ -79,7 +79,7 @@ class Mergesort{
      else{
        result.push(right[r++]);
     }
-  } 
+  }
   //remaining part needs to be added to the result
   return result.concat(left.slice(l)).concat(right.slice(r));
  }
@@ -93,40 +93,66 @@ class Mergesort{
 class Quicksort{
   // step(){}
 
-  //constructor
-  constructor(size, inputArr){
-    this.size;
-    this.inputArr[size];
+  inputArr = [1,7,8,4,9,2,6,5,3];
+
+  //Used to swap two numbers in an array
+  swap(inputArr, index1, index2)
+  {
+    let temp = inputArr[index1];
+    inputArr[index1] = inputArr[index2];
+    inputArr[index2] = temp;
   }
+
+  partition(inputArr, low, high)
+  {
+     let pivot = inputArr[Math.floor((low + high) / 2)];
+
+     //Left "Dog", moving while greater than pivot
+     let i = low;
+     let j = high;
+     while(i <= j)
+     {
+       while(inputArr[i] < pivot)
+       {
+         i++
+       }
+
+       //Right "Dog", moving while less than pivot
+       while(inputArr[j] > pivot)
+       {
+         j--;
+       }
+
+      if(i <= j)
+      {
+        //swap the elements in the array
+        this.swap(inputArr, i, j);
+        i++;
+        j--;
+      }
+    }
+    //return the point in which we will divide the sub array
+    return i;
+}
 
   //The main sorting algo for Quicksort
-  partition(low, high)
+  quickSort(inputArr, left, right)
   {
-     let pivot = inputArr[low];
+    var index;
 
-     //Left "Dog", looking for something smaller than pivot
-     let i = low;
-     while(inputArr[i] < pivot)
-     {
-       i++
-     }
-
-     //Right "Dog", looking for something bigger than pivot
-     let j = inputArr[high];
-     while(inputArr[j] > pivot)
-     {
-       j--;
-     }
-
-     //swap the elements in the array
-     swap(inputArr, i, j);
-  }
-
-//Used to swap two numbers in an array
-  swap(index1, index2){
-    let temp = myArr[index1];
-    inputArr[index1] = myArr[index2];
-    inputArr[index2] = temp;
+    if(inputArr.length > 1)
+    {
+        index = this.partition(inputArr, left, right);
+        if(left < index - 1)
+        {
+          this.quickSort(inputArr, left, index - 1)
+        }
+        if(index < right)
+        {
+          this.quickSort(inputArr, index, right)
+        }
+    }
+    return inputArr
   }
 }
 
@@ -136,19 +162,19 @@ class Insertionsort{
 
 	insertion_Sort(inputArr)
 	{
-  		for (var i = 1; i < inputArr.length; i++) 
+  		for (var i = 1; i < inputArr.length; i++)
   		{
-    			if (inputArr[i] < inputArr[0]) 
+    			if (inputArr[i] < inputArr[0])
     			{
       				arr.unshift(inputArr.splice(i,1)[0]);
-    			} 
-    			else if (inputArr[i] > inputArr[i-1]) 
+    			}
+    			else if (inputArr[i] > inputArr[i-1])
     			{
       				continue;
-    			} 
+    			}
     			else {
       				for (var j = 1; j < i; j++) {
-        				if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j]) 
+        				if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j])
         				{
           					inputArr.splice(j,0,inputArr.splice(i,1)[0]);
 						console.log(inputArr);
@@ -158,7 +184,6 @@ class Insertionsort{
   		}
   		return inputArr;
 	}
-
 }
 
 //This will call each sorting algo's step function
@@ -293,7 +318,8 @@ class Tester {
     for(var i = 0; i < node.position.x; i++){
       for(var j = 0; j < node.position.y; j++){
         context.beginPath();
-        
+
+
         context.strokeStyle = "gray";
         context.fillStyle = "red";
         context.rect((+this.grid[i][j].position.x)*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
@@ -319,6 +345,11 @@ let tester3 = new Tester(insert_grid, insert_context);
 merge_button.onclick = () => { tester1.sort(tester1.unsorted_array, tester1.context); };
 quick_button.onclick = () => { tester2.sort(tester2.unsorted_array, tester2.context); };
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
+
+//Ean testing the quick sort
+// var test = new Quicksort();
+// testing = test.quickSort(test.inputArr, 0, test.inputArr.length - 1);
+// console.log(testing);
 
 // tester1.sort(tester1.unsorted_array, tester1.context);
 // tester2.sort(tester2.unsorted_array, tester2.context);
