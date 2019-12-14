@@ -16,6 +16,9 @@ let merge_button = document.getElementById('merge_button');
 let quick_button = document.getElementById('quick_button');
 let insert_button = document.getElementById('insert_button');
 
+//in ms
+let sleep_time = 1;
+
 setDimensions(merge);
 setDimensions(quick);
 setDimensions(insert);
@@ -210,7 +213,7 @@ class Node{
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => {setTimeout(resolve, ms)});
 }
 
 function hasBeenVisited(context, node){
@@ -243,8 +246,8 @@ function drawNode(context, node){
   context.beginPath();
   context.strokeStyle = "gray";
   context.fillStyle=  "yellow";
-  context.rect(node.position.x*scale_factor, node.position.y*scale_factor, node.width, node.height);
-  context.fillRect(node.position.x*scale_factor, node.position.y*scale_factor, node.width, node.height);
+  context.rect(node.position.x*scale_factor, node.value*scale_factor, node.width, node.height);
+  context.fillRect(node.position.x*scale_factor, node.value*scale_factor, node.width, node.height);
   context.stroke();
 }
 
@@ -253,51 +256,54 @@ class Tester {
 
   constructor(grid, context){
     this.unsorted_array = [];
-    this.grid = grid;
     this.context = context;
 
     for(var i = 0; i < 12; i++){
-      this.unsorted_array.push(new Node(new Coord(i, 12-i, 0), i))
+      this.unsorted_array.push(new Node(new Coord(i, Math.floor(Math.random()*12)+1, 0), Math.floor(Math.random()*12)))
     }
   }
 
   //nodes will be Node objects
-  sort(all_nodes, context){
+  async sort(all_nodes, context){
     for(var i = 0; i < all_nodes.length; i++){
-      if(i != all_nodes.length - 1){
-        // console.log(all_nodes[i].contents.value, all_nodes[i+1].contents.value)
-        if(all_nodes[i].value < all_nodes[i+1].value){
-          // console.log(all_nodes);
-          // console.log("Before: " + all_nodes[i].contents.value)
-          this.swap(all_nodes[i], all_nodes[i+1], context);
-          // console.log("After: " + all_nodes[i].contents.value)
+      for(var j = 0; j < all_nodes.length-1; j++){
+        if(all_nodes[j].value < all_nodes[j+1].value){
           //pause momentarily
+          await sleep(sleep_time);
+          await this.swap(all_nodes[j], all_nodes[j+1], context);
         }
       }
     }
+    console.log(this.unsorted_array);
   }
 
-  swap(greater, lesser, context){
+  async swap(greater, lesser, context){
     //erase old nodes
     this.eraseNode(greater, context);
+    await sleep(sleep_time);
     this.eraseNode(lesser, context);
+    await sleep(sleep_time);
+    
     //swap node objects
-    this.swapNode(greater, lesser);
+    await this.swapNode(greater, lesser);
+    await sleep(sleep_time);
+
     //draw nodes on specific canvas
     this.drawNode(greater, context);
+    await sleep(sleep_time);
     this.drawNode(lesser, context);
-  }
+    await sleep(sleep_time);
 
+  }
   //helpers
-  eraseNode(node, context, grid){
-    for(var i = 0; i < node.position.x; i++){
-      for(var j = 0; j < node.position.y; j++){
-        context.clearRect(this.grid[i][j].position.x*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
-      }
+  eraseNode(node, context){
+    let i = node.position.x;
+    for(var j = 0; j < node.value; j++){
+      context.clearRect(i*scale_factor, j*scale_factor, node.width, node.height);
     }
   }
 
-  swapNode(greater, lesser){
+ async swapNode(greater, lesser){
     for(let property in greater){
       if(property == "position"){
         for(var coord in greater[property]){
@@ -314,17 +320,26 @@ class Tester {
   }
 
   drawNode(node, context){
-    for(var i = 0; i < node.position.x; i++){
-      for(var j = 0; j < node.position.y; j++){
-        context.beginPath();
-
-
-        context.strokeStyle = "gray";
-        context.fillStyle = "red";
-        context.rect((+this.grid[i][j].position.x)*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
-        context.fillRect(this.grid[i][j].position.x*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
-        context.stroke();
-      }
+// <<<<<<< Updated upstream
+//     for(var i = 0; i < node.position.x; i++){
+//       for(var j = 0; j < node.position.y; j++){
+//         context.beginPath();
+//         context.strokeStyle = "gray";
+//         context.fillStyle = "red";
+//         context.rect((+this.grid[i][j].position.x)*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
+//         context.fillRect(this.grid[i][j].position.x*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
+//         context.stroke();
+//       }
+// =======
+    let i = node.position.x;
+    console.log(i)
+    for(var j = 0; j < node.value; j++){
+      context.beginPath();
+      context.strokeStyle = "gray";
+      context.fillStyle = "red";
+      context.rect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.fillRect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.stroke();
     }
   }
 }
@@ -341,7 +356,16 @@ let tester1 = new Tester(merge_grid, merge_context);
 let tester2 = new Tester(quick_grid, quick_context);
 let tester3 = new Tester(insert_grid, insert_context);
 
-merge_button.onclick = () => { tester1.sort(tester1.unsorted_array, tester1.context); };
+for(var i = 0; i < tester1.unsorted_array.length; i++){
+  tester1.drawNode(tester1.unsorted_array[i], merge_context);
+}
+
+merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context).then(()=>{
+  for(var i = 0; i < tester1.unsorted_array.length; i++){
+    console.log(tester1.unsorted_array[i])
+    tester1.drawNode(tester1.unsorted_array[i], merge_context);
+  }
+}); };
 quick_button.onclick = () => { tester2.sort(tester2.unsorted_array, tester2.context); };
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
 
