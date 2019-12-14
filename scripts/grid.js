@@ -92,8 +92,7 @@ class Mergesort{
 // Ean
 class Quicksort{
   // step(){}
-
-  inputArr = [1,7,8,4,9,2,6,5,3];
+  inputArr = [];
 
   //Used to swap two numbers in an array
   swap(inputArr, index1, index2)
@@ -105,20 +104,20 @@ class Quicksort{
 
   partition(inputArr, low, high)
   {
-     let pivot = inputArr[Math.floor((low + high) / 2)];
+     let pivot = inputArr[Math.floor((low + high) / 2)].value;
 
      //Left "Dog", moving while greater than pivot
      let i = low;
      let j = high;
      while(i <= j)
      {
-       while(inputArr[i] < pivot)
+       while(inputArr[i].value < pivot)
        {
          i++
        }
 
        //Right "Dog", moving while less than pivot
-       while(inputArr[j] > pivot)
+       while(inputArr[j].value > pivot)
        {
          j--;
        }
@@ -347,7 +346,18 @@ quick_button.onclick = () => { tester2.sort(tester2.unsorted_array, tester2.cont
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
 
 //Ean testing the quick sort
+//
 // var test = new Quicksort();
+// test.inputArr.push(new Node(1,9));
+// test.inputArr.push(new Node(1,8));
+// test.inputArr.push(new Node(1,7));
+// test.inputArr.push(new Node(1,6));
+// test.inputArr.push(new Node(1,5));
+// test.inputArr.push(new Node(1,4));
+// test.inputArr.push(new Node(1,3));
+// test.inputArr.push(new Node(1,2));
+// test.inputArr.push(new Node(1,1));
+// console.log(test.inputArr);
 // testing = test.quickSort(test.inputArr, 0, test.inputArr.length - 1);
 // console.log(testing);
 
