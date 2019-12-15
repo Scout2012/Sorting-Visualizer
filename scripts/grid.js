@@ -160,26 +160,25 @@ class Quicksort{
 
 // Rojan
 class Insertionsort{
-	inputArr = [0,1,2,49,19,203]
+	inputArr = []
 
 	insertion_Sort(inputArr)
 	{
   		for (var i = 1; i < inputArr.length; i++)
   		{
-    			if (inputArr[i] < inputArr[0])
+    			if (inputArr[i].value < inputArr[0].value)
     			{
-      				arr.unshift(inputArr.splice(i,1)[0]);
+      				inputArr.unshift(inputArr.splice(i,1)[0]);
     			}
-    			else if (inputArr[i] > inputArr[i-1])
+    			else if (inputArr[i].value > inputArr[i-1].value)
     			{
       				continue;
     			}
     			else {
       				for (var j = 1; j < i; j++) {
-        				if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j])
+        				if (inputArr[i].value > inputArr[j-1].value && inputArr[i].value < inputArr[j].value)
         				{
           					inputArr.splice(j,0,inputArr.splice(i,1)[0]);
-						console.log(inputArr);
         				}
       				}
     			}
@@ -283,7 +282,7 @@ class Tester {
     await sleep(sleep_time);
     this.eraseNode(lesser, context);
     await sleep(sleep_time);
-    
+
     //swap node objects
     await this.swapNode(greater, lesser);
     await sleep(sleep_time);
