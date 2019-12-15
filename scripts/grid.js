@@ -117,11 +117,11 @@ class Quicksort{
 
     this.drawNode(lesser, "black", context);
     await sleep(sleep_time);
-    
+
     //swap node objects
     await this.swapNode(greater, lesser);
     await sleep(sleep_time);
-    
+
     //draw nodes on specific canvas
     this.drawNode(greater, "red", context);
     await sleep(sleep_time);
@@ -130,47 +130,65 @@ class Quicksort{
     await sleep(sleep_time);
   }
 
-  partition(inputArr, low, high) {
-     let pivot = inputArr[Math.floor((low + high) / 2)].value;
+  partition(inputArr, low, high, piv) {
+     let pivot = inputArr[piv].value;
+     let returnIndex = low;
 
-     //Left "Dog", moving while greater than pivot
-     let i = low;
-     let j = high;
-     while(i <= j) {
-       while(i < inputArr.length && inputArr[i].value < pivot) {
-         i++
-       }
-
-       //Right "Dog", moving while less than pivot
-       while(j > 0 && inputArr[j].value > pivot) {
-         j--;
-       }
-
-      if(i <= j) {
-        //swap the elements in the array
-        this.swap(inputArr[i], inputArr[j], quick_context);
-        i++;
-        j--;
-      }
+   for(var i = low; i < high; i++){
+    if(inputArr[i].value < pivot){
+      this.swap(inputArr[i], inputArr[returnIndex], quick_context);
+      returnIndex++;
     }
+  }
+
+  this.swap(inputArr[high], inputArr[returnIndex], quick_context);
+  return returnIndex;
+    //  let i = low;
+    //  let j = high;
+    //
+    //  //Continue moving until the two Dogs cross paths
+    //  while(i <= j) {
+    //    console.log("length: " + inputArr.length);
+    //    console.log("i: " + i);
+    //    console.log("j: " + j);
+    //
+    //    while(inputArr[i].value < pivot) {
+    //      console.log("Loop1");
+    //      i++
+    //    }
+    //
+    //    //Right "Dog", moving while less than pivot
+    //   while(inputArr[j].value > pivot) {
+    //      j--;
+    //      console.log("Loop2");
+    //    }
+    //
+    //    //Left "Dog", moving while greater than pivot
+    //   if(i <= j) {
+    //     //swap the elements in the array
+    //     console.log("swap performmed");
+    //     this.swap(inputArr[i], inputArr[j], quick_context);
+    //     i++;
+    //     j--;
+    //   }
+    // }
     //return the point in which we will divide the sub array
-    return i;
+    //return i;
 }
 
   //The main sorting algo for Quicksort
   quickSort(inputArr, left, right) {
     let index;
+    var pivot;
+    if(left < right){
+    pivot = right;
+    index = this.partition(inputArr, left, right, pivot);
 
-    if(inputArr.length > 1) {
-      index = this.partition(inputArr, left, right);
-      if(left < index - 1) {
-        this.quickSort(inputArr, left, index - 1)
-      }
-      if(index < right) {
-        this.quickSort(inputArr, index, right)
-      }
+   //sort left and right
+   this.quickSort(inputArr, left, index - 1);
+   this.quickSort(inputArr, index + 1, right);
     }
-    return inputArr
+  return inputArr;
   }
 
   eraseNode(node, context){
@@ -339,11 +357,11 @@ class Tester {
 
     this.drawNode(lesser, "black", context);
     await sleep(sleep_time);
-    
+
     //swap node objects
     await this.swapNode(greater, lesser);
     await sleep(sleep_time);
-    
+
     //draw nodes on specific canvas
     this.drawNode(greater, "red", context);
     await sleep(sleep_time);
@@ -381,7 +399,17 @@ class Tester {
       context.stroke();
     }
   }
+  isSorted(inputArr){
+    for(var i; i < inpuArr.length - 1; i++){
+      if(inputArr[i] > inputArr[i + 1]){
+        return false;
+      }
+      return true
+    }
+  }
 }
+
+
 
 //RUNNING UNIT TESTS
 
