@@ -17,7 +17,7 @@ let quick_button = document.getElementById('quick_button');
 let insert_button = document.getElementById('insert_button');
 
 //in ms
-let sleep_time = 100;
+let sleep_time = 1;
 
 setDimensions(merge);
 setDimensions(quick);
@@ -52,40 +52,49 @@ let insertStep = false;
 //Main classes for the sorting algos
 // Kizar
 class Mergesort{
-    arr = []
-    mergesort(arr){
+  constructor(){
+    this.inputArr = [];
+    this.result = [];
+    this.context = merge_context;
 
+    for(var i = 0; i < 12; i++){
+      this.inputArr.push(new Node(new Coord(i, Math.floor(Math.random()*12)+1, 0), Math.floor(Math.random()*12)))
+    }
+  }
+  mergeSort(arr){
+    console.log(arr)
     let len = arr.length;
     let mid = Math.floor(len/2);
     let left = arr.slice(0,mid);
     let right = arr.slice(mid);
 
-    if(len < 2){
+    if(arr.length < 2){
       return arr;
     }
     // break the array into left and right components
-    return merge(mergesort(left),mergesort(right));
-   }
-
-    merge(left,right){
-
-      var  result = [];
-      var  lLen = left.length;
-      var  rLen = right.length;
-      var  l = 0;
-      var  r = 0;
-
-  while(l < lLen && r < rLen){
-     if(left[l].value < right[r].value){
-       result.push(left[l++].value);
-     }
-     else{
-       result.push(right[r++].value);
-    }
+    return this.merge(this.mergeSort(left), this.mergeSort(right));
   }
-  //remaining part needs to be added to the result
-  return result.concat(left.slice(l)).concat(right.slice(r));
- }
+
+  merge(left, right){
+
+    var lLen = left.length;
+    var rLen = right.length;
+    var l = 0;
+    var r = 0;
+    while(l < lLen && r < rLen){
+      console.log("left: ", left[l])
+      console.log("right: ", right[l])
+      if(left[l].value < right[r].value){
+        this.result.push(left[l]);
+        l++;
+      } else {
+        this.result.push(right[r]);
+        r++
+      }
+    }
+    //remaining part needs to be added to the result
+    return this.result.concat(left.slice(l)).concat(right.slice(r));
+  }
 
 
   //Step func will make a singular comparison within
@@ -144,52 +153,21 @@ class Quicksort{
 
   await this.swap(inputArr[high], inputArr[returnIndex], quick_context);
   return returnIndex;
-    //  let i = low;
-    //  let j = high;
-    //
-    //  //Continue moving until the two Dogs cross paths
-    //  while(i <= j) {
-    //    console.log("length: " + inputArr.length);
-    //    console.log("i: " + i);
-    //    console.log("j: " + j);
-    //
-    //    while(inputArr[i].value < pivot) {
-    //      console.log("Loop1");
-    //      i++
-    //    }
-    //
-    //    //Right "Dog", moving while less than pivot
-    //   while(inputArr[j].value > pivot) {
-    //      j--;
-    //      console.log("Loop2");
-    //    }
-    //
-    //    //Left "Dog", moving while greater than pivot
-    //   if(i <= j) {
-    //     //swap the elements in the array
-    //     console.log("swap performmed");
-    //     this.swap(inputArr[i], inputArr[j], quick_context);
-    //     i++;
-    //     j--;
-    //   }
-    // }
-    //return the point in which we will divide the sub array
-    //return i;
 }
 
   //The main sorting algo for Quicksort
   async quickSort(inputArr, left, right) {
     let index;
-    var pivot;
+    let pivot;
     if(left < right){
-    pivot = right;
-    index = await this.partition(inputArr, left, right, pivot);
+      pivot = right;
+      index = await this.partition(inputArr, left, right, pivot);
 
-   //sort left and right
-   await this.quickSort(inputArr, left, index - 1);
-   await this.quickSort(inputArr, index + 1, right);
+      //sort left and right
+      await this.quickSort(inputArr, left, index - 1);
+      await this.quickSort(inputArr, index + 1, right);
     }
-  return inputArr;
+    return inputArr;
   }
 
   eraseNode(node, context){
@@ -225,31 +203,59 @@ class Quicksort{
 
 // Rojan
 class Insertionsort{
-	inputArr = []
+  constructor(){
+    this.inputArr = []
+    this.context = insert_context;
 
-	insertion_Sort(inputArr)
-	{
-  		for (var i = 1; i < inputArr.length; i++)
-  		{
-    			if (inputArr[i].value < inputArr[0].value)
-    			{
-      				inputArr.unshift(inputArr.splice(i,1)[0]);
-    			}
-    			else if (inputArr[i].value > inputArr[i-1].value)
-    			{
-      				continue;
-    			}
-    			else {
-      				for (var j = 1; j < i; j++) {
-        				if (inputArr[i].value > inputArr[j-1].value && inputArr[i].value < inputArr[j].value)
-        				{
-          					inputArr.splice(j,0,inputArr.splice(i,1)[0]);
-        				}
-      				}
-    			}
-  		}
-  		return inputArr;
-	}
+    for(var i = 0; i < 12; i++){
+      this.inputArr.push(new Node(new Coord(i, Math.floor(Math.random()*12)+1, 0), Math.floor(Math.random()*12)))
+    }
+  }
+
+	insertionSort() {
+    for(var i = 1; i < this.inputArr.length; i++) {
+      let key = this.inputArr[i].value;
+      let j = i - 1;
+      console.log(this.inputArr[j].value, key)
+      while(j >= 0 && this.inputArr[j].value > key){
+        this.inputArr[j+1].x = this.inputArr[j].x;
+        this.inputArr[j+1].value = this.inputArr[j].value;
+        j--;
+      }
+      this.inputArr[j+1] = this.inputArr[i];
+    //   if(this.inputArr[i].value < this.inputArr[0].value) {
+    //     this.inputArr.unshift(this.inputArr.splice(i,1)[0]);
+    //   } else if(this.inputArr[i].value > this.inputArr[i-1].value) {
+    //     continue;
+    //   } else {
+    //     for(var j = 1; j < i; j++) {
+    //       if(this.inputArr[i].value > this.inputArr[j-1].value && this.inputArr[i].value < this.inputArr[j].value) {
+    //         this.inputArr.splice(j, 0, this.inputArr.splice(i,1)[0]);
+    //       }
+    //     }
+    //   }
+    }
+    console.log(this.inputArr)
+  }
+  
+  eraseNode(node, context){
+    let i = node.x;
+    for(var j = 0; j < node.value; j++){
+      context.clearRect(i*scale_factor, j*scale_factor, node.width, node.height);
+    }
+  }
+
+  drawNode(node, color, context){
+    let i = node.x;
+    for(var j = 0; j < node.value; j++){
+      context.beginPath();
+      context.strokeStyle = "gray";
+      context.fillStyle = color;
+      context.rect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.fillRect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.stroke();
+    }
+  }
 }
 
 //This will call each sorting algo's step function
@@ -334,7 +340,7 @@ class Tester {
   async sort(all_nodes, context){
     for(var i = 0; i < all_nodes.length; i++){
       for(var j = 0; j < all_nodes.length-1; j++){
-        if(all_nodes[j].value < all_nodes[j+1].value){
+        if(all_nodes[j].value > all_nodes[j+1].value){
           //pause momentarily
           await sleep(sleep_time);
           // console.log("Before calling swap function ", all_nodes[j].x)
@@ -400,17 +406,7 @@ class Tester {
       context.stroke();
     }
   }
-  isSorted(inputArr){
-    for(var i; i < inpuArr.length - 1; i++){
-      if(inputArr[i] > inputArr[i + 1]){
-        return false;
-      }
-      return true
-    }
-  }
 }
-
-
 
 //RUNNING UNIT TESTS
 
@@ -429,15 +425,17 @@ let quick_class = new Quicksort();
 let insert_class = new Insertionsort();
 
 for(var i = 0; i < tester1.unsorted_array.length; i++){
-  tester1.drawNode(tester1.unsorted_array[i], "red", merge_context);
+  tester1.drawNode(merge_class.inputArr[i], "red", merge_context);
 }
 for(var i = 0; i < quick_class.inputArr.length; i++){
   tester2.drawNode(quick_class.inputArr[i], "red", quick_context);
 }
-
-merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context) };
+for(var i = 0; i < quick_class.inputArr.length; i++){
+  tester3.drawNode(insert_class.inputArr[i], "red", insert_context);
+}
+merge_button.onclick = async () => { await merge_class.mergeSort(merge_class.inputArr, merge_class.context) };
 quick_button.onclick = async () => { await quick_class.quickSort(quick_class.inputArr, 0, quick_class.inputArr.length-1); };
-insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
+insert_button.onclick = async () => { await insert_class.insertionSort(); };
 
 //Ean testing the quick sort
 //
