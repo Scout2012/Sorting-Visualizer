@@ -52,7 +52,7 @@ let insertStep = false;
 //Main classes for the sorting algos
 // Kizar
 class Mergesort{
-    arr = [2,3,4,52,6,77,11,3,6,9]
+    arr = []
     mergesort(arr){
 
     let len = arr.length;
@@ -76,11 +76,11 @@ class Mergesort{
       var  r = 0;
 
   while(l < lLen && r < rLen){
-     if(left[l] < right[r]){
-       result.push(left[l++]);
+     if(left[l].value < right[r].value){
+       result.push(left[l++].value);
      }
      else{
-       result.push(right[r++]);
+       result.push(right[r++].value);
     }
   }
   //remaining part needs to be added to the result
