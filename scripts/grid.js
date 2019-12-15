@@ -130,18 +130,19 @@ class Quicksort{
     await sleep(sleep_time);
   }
 
-  partition(inputArr, low, high, piv) {
+  async partition(inputArr, low, high, piv) {
      let pivot = inputArr[piv].value;
      let returnIndex = low;
 
    for(var i = low; i < high; i++){
     if(inputArr[i].value < pivot){
       this.swap(inputArr[i], inputArr[returnIndex], quick_context);
+      // await sleep(sleep_time)
       returnIndex++;
     }
   }
 
-  this.swap(inputArr[high], inputArr[returnIndex], quick_context);
+  await this.swap(inputArr[high], inputArr[returnIndex], quick_context);
   return returnIndex;
     //  let i = low;
     //  let j = high;
@@ -177,16 +178,16 @@ class Quicksort{
 }
 
   //The main sorting algo for Quicksort
-  quickSort(inputArr, left, right) {
+  async quickSort(inputArr, left, right) {
     let index;
     var pivot;
     if(left < right){
     pivot = right;
-    index = this.partition(inputArr, left, right, pivot);
+    index = await this.partition(inputArr, left, right, pivot);
 
    //sort left and right
-   this.quickSort(inputArr, left, index - 1);
-   this.quickSort(inputArr, index + 1, right);
+   await this.quickSort(inputArr, left, index - 1);
+   await this.quickSort(inputArr, index + 1, right);
     }
   return inputArr;
   }
@@ -435,7 +436,7 @@ for(var i = 0; i < quick_class.inputArr.length; i++){
 }
 
 merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context) };
-quick_button.onclick = () => { quick_class.quickSort(quick_class.inputArr, 0, quick_class.inputArr.length-1); };
+quick_button.onclick = async () => { await quick_class.quickSort(quick_class.inputArr, 0, quick_class.inputArr.length-1); };
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
 
 //Ean testing the quick sort
