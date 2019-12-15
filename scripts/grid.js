@@ -17,7 +17,7 @@ let quick_button = document.getElementById('quick_button');
 let insert_button = document.getElementById('insert_button');
 
 //in ms
-let sleep_time = 1;
+let sleep_time = 100;
 
 setDimensions(merge);
 setDimensions(quick);
@@ -95,13 +95,39 @@ class Mergesort{
 // Ean
 class Quicksort{
   // step(){}
-  inputArr = [];
+  constructor(){
+    this.context = quick_context;
+    this.inputArr = [];
+    for(var i = 0; i < 12; i++){
+      this.inputArr.push(new Node(new Coord(i, Math.floor(Math.random()*12)+1, 0), Math.floor(Math.random()*12)))
+    }
+  }
 
   //Used to swap two numbers in an array
-  swap(inputArr, index1, index2) {
-    let temp = inputArr[index1];
-    inputArr[index1] = inputArr[index2];
-    inputArr[index2] = temp;
+  async swap(greater, lesser, context){
+    //erase old nodes
+    this.eraseNode(greater, context);
+    await sleep(sleep_time);
+
+    this.drawNode(lesser, "black", context);
+    await sleep(sleep_time);
+
+    this.eraseNode(lesser, context);
+    await sleep(sleep_time);
+
+    this.drawNode(lesser, "black", context);
+    await sleep(sleep_time);
+    
+    //swap node objects
+    await this.swapNode(greater, lesser);
+    await sleep(sleep_time);
+    
+    //draw nodes on specific canvas
+    this.drawNode(greater, "red", context);
+    await sleep(sleep_time);
+
+    this.drawNode(lesser, "red", context);
+    await sleep(sleep_time);
   }
 
   partition(inputArr, low, high) {
@@ -111,18 +137,18 @@ class Quicksort{
      let i = low;
      let j = high;
      while(i <= j) {
-       while(inputArr[i].value < pivot) {
+       while(i < inputArr.length && inputArr[i].value < pivot) {
          i++
        }
 
        //Right "Dog", moving while less than pivot
-       while(inputArr[j].value > pivot) {
+       while(j > 0 && inputArr[j].value > pivot) {
          j--;
        }
 
       if(i <= j) {
         //swap the elements in the array
-        this.swap(inputArr, i, j);
+        this.swap(inputArr[i], inputArr[j], quick_context);
         i++;
         j--;
       }
@@ -145,6 +171,36 @@ class Quicksort{
       }
     }
     return inputArr
+  }
+
+  eraseNode(node, context){
+    let i = node.x;
+    for(var j = 0; j < node.value; j++){
+      context.clearRect(i*scale_factor, j*scale_factor, node.width, node.height);
+    }
+  }
+
+ async swapNode(greater, lesser){
+    for(let property in greater){
+      let buffer = greater[property];
+      greater[property] = lesser[property];
+      lesser[property] = buffer;
+    }
+    let buffer_x = greater.x;
+    greater.x = lesser.x;
+    lesser.x = buffer_x;
+  }
+
+  drawNode(node, color, context){
+    let i = node.x;
+    for(var j = 0; j < node.value; j++){
+      context.beginPath();
+      context.strokeStyle = "gray";
+      context.fillStyle = color;
+      context.rect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.fillRect(i*scale_factor, j*scale_factor, node.width, node.height);
+      context.stroke();
+    }
   }
 }
 
@@ -291,9 +347,9 @@ class Tester {
     //draw nodes on specific canvas
     this.drawNode(greater, "red", context);
     await sleep(sleep_time);
+
     this.drawNode(lesser, "red", context);
     await sleep(sleep_time);
-
   }
   //helpers
   eraseNode(node, context){
@@ -339,12 +395,19 @@ let tester1 = new Tester(merge_grid, merge_context);
 let tester2 = new Tester(quick_grid, quick_context);
 let tester3 = new Tester(insert_grid, insert_context);
 
+let merge_class = new Mergesort();
+let quick_class = new Quicksort();
+let insert_class = new Insertionsort();
+
 for(var i = 0; i < tester1.unsorted_array.length; i++){
   tester1.drawNode(tester1.unsorted_array[i], "red", merge_context);
 }
+for(var i = 0; i < quick_class.inputArr.length; i++){
+  tester2.drawNode(quick_class.inputArr[i], "red", quick_context);
+}
 
 merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context) };
-quick_button.onclick = () => { tester2.sort(tester2.unsorted_array, tester2.context); };
+quick_button.onclick = () => { quick_class.quickSort(quick_class.inputArr, 0, quick_class.inputArr.length-1); };
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
 
 //Ean testing the quick sort
