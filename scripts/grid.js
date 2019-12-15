@@ -55,10 +55,10 @@ class Mergesort{
     arr = [2,3,4,52,6,77,11,3,6,9]
     mergesort(arr){
 
-    var len = arr.length;
-    var mid = Math.floor(len/2);
-    var left = arr.slice(0,mid);
-    var right = arr.slice(mid);
+    let len = arr.length;
+    let mid = Math.floor(len/2);
+    let left = arr.slice(0,mid);
+    let right = arr.slice(mid);
 
     if(len < 2){
       return arr;
@@ -98,35 +98,29 @@ class Quicksort{
   inputArr = [];
 
   //Used to swap two numbers in an array
-  swap(inputArr, index1, index2)
-  {
+  swap(inputArr, index1, index2) {
     let temp = inputArr[index1];
     inputArr[index1] = inputArr[index2];
     inputArr[index2] = temp;
   }
 
-  partition(inputArr, low, high)
-  {
+  partition(inputArr, low, high) {
      let pivot = inputArr[Math.floor((low + high) / 2)].value;
 
      //Left "Dog", moving while greater than pivot
      let i = low;
      let j = high;
-     while(i <= j)
-     {
-       while(inputArr[i].value < pivot)
-       {
+     while(i <= j) {
+       while(inputArr[i].value < pivot) {
          i++
        }
 
        //Right "Dog", moving while less than pivot
-       while(inputArr[j].value > pivot)
-       {
+       while(inputArr[j].value > pivot) {
          j--;
        }
 
-      if(i <= j)
-      {
+      if(i <= j) {
         //swap the elements in the array
         this.swap(inputArr, i, j);
         i++;
@@ -138,21 +132,17 @@ class Quicksort{
 }
 
   //The main sorting algo for Quicksort
-  quickSort(inputArr, left, right)
-  {
-    var index;
+  quickSort(inputArr, left, right) {
+    let index;
 
-    if(inputArr.length > 1)
-    {
-        index = this.partition(inputArr, left, right);
-        if(left < index - 1)
-        {
-          this.quickSort(inputArr, left, index - 1)
-        }
-        if(index < right)
-        {
-          this.quickSort(inputArr, index, right)
-        }
+    if(inputArr.length > 1) {
+      index = this.partition(inputArr, left, right);
+      if(left < index - 1) {
+        this.quickSort(inputArr, left, index - 1)
+      }
+      if(index < right) {
+        this.quickSort(inputArr, index, right)
+      }
     }
     return inputArr
   }
@@ -161,29 +151,21 @@ class Quicksort{
 // Rojan
 class Insertionsort{
 	inputArr = [0,1,2,49,19,203]
-
-	insertion_Sort(inputArr)
-	{
-  		for (var i = 1; i < inputArr.length; i++)
-  		{
-    			if (inputArr[i] < inputArr[0])
-    			{
-      				arr.unshift(inputArr.splice(i,1)[0]);
-    			}
-    			else if (inputArr[i] > inputArr[i-1])
-    			{
-      				continue;
-    			}
-    			else {
-      				for (var j = 1; j < i; j++) {
-        				if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j])
-        				{
-          					inputArr.splice(j,0,inputArr.splice(i,1)[0]);
-						console.log(inputArr);
-        				}
-      				}
-    			}
-  		}
+	insertion_Sort(inputArr) {
+    for(var i = 1; i < inputArr.length; i++) {
+      if (inputArr[i] < inputArr[0]) {
+          arr.unshift(inputArr.splice(i,1)[0]);
+      } else if (inputArr[i] > inputArr[i-1]) {
+          continue;
+      } else {
+        for(var j = 1; j < i; j++) {
+          if (inputArr[i] > inputArr[j-1] && inputArr[i] < inputArr[j]) {
+            inputArr.splice(j,0,inputArr.splice(i,1)[0]);
+            console.log(inputArr);
+          }
+        }
+      }
+    }
   		return inputArr;
 	}
 }
@@ -205,7 +187,9 @@ class Coord{
 
 class Node{
   constructor(position, value){
-      this.position =  position,
+      this.x =  position.x,
+      this.y =  position.y,
+      this.z =  position.z,
       this.width = BOARD_WIDTH,
       this.height = BOARD_HEIGHT,
       this.value = value
@@ -246,8 +230,8 @@ function drawNode(context, node){
   context.beginPath();
   context.strokeStyle = "gray";
   context.fillStyle=  "yellow";
-  context.rect(node.position.x*scale_factor, node.value*scale_factor, node.width, node.height);
-  context.fillRect(node.position.x*scale_factor, node.value*scale_factor, node.width, node.height);
+  context.rect(node.x*scale_factor, node.value*scale_factor, node.width, node.height);
+  context.fillRect(node.x*scale_factor, node.value*scale_factor, node.width, node.height);
   context.stroke();
 }
 
@@ -261,6 +245,7 @@ class Tester {
     for(var i = 0; i < 12; i++){
       this.unsorted_array.push(new Node(new Coord(i, Math.floor(Math.random()*12)+1, 0), Math.floor(Math.random()*12)))
     }
+    // console.log("Unsorted: ", this.unsorted_array)
   }
 
   //nodes will be Node objects
@@ -270,34 +255,42 @@ class Tester {
         if(all_nodes[j].value < all_nodes[j+1].value){
           //pause momentarily
           await sleep(sleep_time);
+          // console.log("Before calling swap function ", all_nodes[j].x)
           await this.swap(all_nodes[j], all_nodes[j+1], context);
+          // console.log("After calling swap function ", all_nodes[j].x)
         }
       }
     }
-    console.log(this.unsorted_array);
   }
 
   async swap(greater, lesser, context){
     //erase old nodes
     this.eraseNode(greater, context);
     await sleep(sleep_time);
+
+    this.drawNode(lesser, "black", context);
+    await sleep(sleep_time);
+
     this.eraseNode(lesser, context);
+    await sleep(sleep_time);
+
+    this.drawNode(lesser, "black", context);
     await sleep(sleep_time);
     
     //swap node objects
     await this.swapNode(greater, lesser);
     await sleep(sleep_time);
-
+    
     //draw nodes on specific canvas
-    this.drawNode(greater, context);
+    this.drawNode(greater, "red", context);
     await sleep(sleep_time);
-    this.drawNode(lesser, context);
+    this.drawNode(lesser, "red", context);
     await sleep(sleep_time);
 
   }
   //helpers
   eraseNode(node, context){
-    let i = node.position.x;
+    let i = node.x;
     for(var j = 0; j < node.value; j++){
       context.clearRect(i*scale_factor, j*scale_factor, node.width, node.height);
     }
@@ -305,38 +298,21 @@ class Tester {
 
  async swapNode(greater, lesser){
     for(let property in greater){
-      if(property == "position"){
-        for(var coord in greater[property]){
-          var buffer = greater[property][coord]
-          greater[property][coord] = lesser[property][coord];
-          lesser[property][coord] = buffer;
-        }
-      } else {
-        let buffer = greater[property];
-        greater[property] = lesser[property];
-        lesser[property] = buffer;
-      }
+      let buffer = greater[property];
+      greater[property] = lesser[property];
+      lesser[property] = buffer;
     }
+    let buffer_x = greater.x;
+    greater.x = lesser.x;
+    lesser.x = buffer_x;
   }
 
-  drawNode(node, context){
-// <<<<<<< Updated upstream
-//     for(var i = 0; i < node.position.x; i++){
-//       for(var j = 0; j < node.position.y; j++){
-//         context.beginPath();
-//         context.strokeStyle = "gray";
-//         context.fillStyle = "red";
-//         context.rect((+this.grid[i][j].position.x)*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
-//         context.fillRect(this.grid[i][j].position.x*scale_factor, this.grid[i][j].position.y*scale_factor, this.grid[i][j].width, this.grid[i][j].height);
-//         context.stroke();
-//       }
-// =======
-    let i = node.position.x;
-    console.log(i)
+  drawNode(node, color, context){
+    let i = node.x;
     for(var j = 0; j < node.value; j++){
       context.beginPath();
       context.strokeStyle = "gray";
-      context.fillStyle = "red";
+      context.fillStyle = color;
       context.rect(i*scale_factor, j*scale_factor, node.width, node.height);
       context.fillRect(i*scale_factor, j*scale_factor, node.width, node.height);
       context.stroke();
@@ -357,15 +333,10 @@ let tester2 = new Tester(quick_grid, quick_context);
 let tester3 = new Tester(insert_grid, insert_context);
 
 for(var i = 0; i < tester1.unsorted_array.length; i++){
-  tester1.drawNode(tester1.unsorted_array[i], merge_context);
+  tester1.drawNode(tester1.unsorted_array[i], "red", merge_context);
 }
 
-merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context).then(()=>{
-  for(var i = 0; i < tester1.unsorted_array.length; i++){
-    console.log(tester1.unsorted_array[i])
-    tester1.drawNode(tester1.unsorted_array[i], merge_context);
-  }
-}); };
+merge_button.onclick = async () => { await tester1.sort(tester1.unsorted_array, tester1.context) };
 quick_button.onclick = () => { tester2.sort(tester2.unsorted_array, tester2.context); };
 insert_button.onclick = () => { tester3.sort(tester3.unsorted_array, tester3.context); };
 
